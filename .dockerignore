@@ -15,3 +15,7 @@ docs
 
 # Ignore all hidden files
 .*
+
+
+!.env.defaults
+!librechat.yaml

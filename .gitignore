@@ -106,3 +106,8 @@ uploads/
 
 # owner
 release/
+
+.env
+.env.prod
+
+!librechat.yaml

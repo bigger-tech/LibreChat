@@ -11,10 +11,10 @@ WORKDIR /app
 USER node
 
 COPY --chown=node:node . .
+COPY --chown=node:node .env.defaults .env
+COPY librechat.yaml librechat.yaml
 
 RUN \
-    # Allow mounting of these files, which have no default
-    touch .env ; \
     # Create directories for the volumes to inherit the correct permissions
     mkdir -p /app/client/public/images /app/api/logs ; \
     npm config set fetch-retry-maxtimeout 600000 ; \
@@ -31,7 +31,7 @@ RUN mkdir -p /app/client/public/images /app/api/logs
 # Node API setup
 EXPOSE 3080
 ENV HOST=0.0.0.0
-CMD ["npm", "run", "backend"]
+CMD ["npm", "run", "backend:prod"]
 
 # Optional: for client with nginx routing
 # FROM nginx:stable-alpine AS nginx-client
