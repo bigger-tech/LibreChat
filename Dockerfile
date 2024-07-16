@@ -13,8 +13,7 @@ USER node
 COPY --chown=node:node . .
 
 RUN \
-    # Allow mounting of these files, which have no default
-    touch .env ; \
+    npm run get-pem ; \
     # Create directories for the volumes to inherit the correct permissions
     mkdir -p /app/client/public/images /app/api/logs ; \
     npm config set fetch-retry-maxtimeout 600000 ; \

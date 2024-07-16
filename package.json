@@ -8,6 +8,7 @@
     "packages/*"
   ],
   "scripts": {
+    "get-pem": "node bin/get-pem.js",
     "update": "node config/update.js",
     "add-balance": "node config/add-balance.js",
     "list-balances": "node config/list-balances.js",
