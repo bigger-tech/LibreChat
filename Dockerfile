@@ -17,8 +17,6 @@ ENV PATH="/venv/bin:$PATH"
 RUN mkdir -p /app && chown node:node /app
 WORKDIR /app
 
-USER node
-
 COPY --chown=node:node . .
 COPY --chown=node:node .env.defaults .env
 COPY librechat.yaml librechat.yaml
