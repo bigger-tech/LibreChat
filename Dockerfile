@@ -3,7 +3,16 @@
 # Base node image
 FROM node:20-alpine AS node
 
-RUN apk --no-cache add curl amazon-efs-utils nfs-utils
+RUN apk --no-cache add curl python3 py3-pip nfs-utils
+
+# Create a virtual environment at /venv
+RUN python3 -m venv /venv
+
+# Activate the virtual environment and install botocore
+RUN /venv/bin/pip install botocore
+
+# Set environment variables to use the virtual environment for Python and pip
+ENV PATH="/venv/bin:$PATH"
 
 RUN mkdir -p /app && chown node:node /app
 WORKDIR /app
