@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useForm, FormProvider, Controller, useWatch } from 'react-hook-form';
 import { useGetModelsQuery } from 'librechat-data-provider/react-query';
@@ -9,10 +9,15 @@ import {
   actionDelimiter,
   ImageVisionTool,
   defaultAssistantFormValues,
+  EModelEndpoint,
 } from 'librechat-data-provider';
 import type { FunctionTool, TConfig, TPlugin } from 'librechat-data-provider';
 import type { AssistantForm, AssistantPanelProps } from '~/common';
-import { useCreateAssistantMutation, useUpdateAssistantMutation } from '~/data-provider';
+import {
+  useCreateAssistantMutation,
+  useListAssistantsQuery,
+  useUpdateAssistantMutation,
+} from '~/data-provider';
 import { useAssistantsMapContext, useToastContext } from '~/Providers';
 import { useSelectAssistant, useLocalize } from '~/hooks';
 import { ToolSelectDialog } from '~/components/Tools';
@@ -27,6 +32,7 @@ import { Spinner } from '~/components/svg';
 import { cn, cardStyle } from '~/utils/';
 import Knowledge from './Knowledge';
 import { Panel } from '~/common';
+import { productDefinitionAssistant } from '~/constant';
 
 const labelClass = 'mb-2 block text-xs font-bold text-gray-700 dark:text-gray-400';
 const inputClass =
@@ -129,7 +135,22 @@ export default function AssistantPanel({
     }
     return assistant.files;
   }, [assistant]);
+  const assistants = useListAssistantsQuery(EModelEndpoint.assistants, undefined, {});
+  useEffect(() => {
+    if (!assistants.data) {
+      return;
+    }
 
+    const hasAssistant = assistants.data.data?.find((assistant) => {
+      return assistant.name === productDefinitionAssistant.name;
+    });
+
+    if (hasAssistant) {
+      return;
+    }
+    create.mutate(productDefinitionAssistant);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [assistants.data]);
   const onSubmit = (data: AssistantForm) => {
     const tools: Array<FunctionTool | string> = [...functions].map((functionName) => {
       if (!functionName.includes(actionDelimiter)) {
